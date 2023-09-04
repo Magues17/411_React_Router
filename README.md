@@ -1,21 +1,19 @@
-Two components have already been created for you, Home & About.
+We are adding a login page to the FakeCars.com application. Once complete, you will be able to login to the app and you will remain logged in on page refresh until the cookie expires at one minute's time.
 
-Look for the Router.js file under the src folder. This file is basically empty besides a couple imports. You need to create a functional component called Router in this file. You will return a Routes wrapper container that wraps two individual Route's. The two Route's should be the following:
+You should see a login button on the top-right when the app first starts. Go ahead and navigate to the login page and proceed to login. Notice that it takes you to the home page. Now, click the logout button. You should have been logged out and taken back to the "/login" route. But are we ever logged in or out? Click on the "Home" and "About" links on the navigation bar. It looks like we can still access everything.
 
-"/" -> Home
-"/about" -> About
-Now we are going to take this Router and import it into App.js. Place it right underneath the Navigation component. You will need to import BrowserRouter from react-router-dom and use it to wrap both the Navigation and the Router components.
+In the Router.js file we can see a list of all our routes and paths. Write a ProtectedRoute function under the appropriate comment.
 
-If you were successful you should see a homepage with a lot of different car details on it. You should also be able to add "/about" to the end of the url to see the about page. Typing this paths in the browser will soon get tiring so let's add them to the Navigation component. There are two commented areas for you to add links. Create one Link to the Home page and one to the About page. If you forget how to do that, reference the documentation here.
+Write a checkAuth function under the appropriate comment. Use the cookie module to parse the browser cookies and check the loggedIn cookie. If it has a value, return true otherwise return false.
 
-Next we want to fill out the Car component in src/Car.js but first we will need to be able to see it and Link to it. Inside of Router.js import the "Car" component and create a route for it. The path should be able to accept an id for the specific car as well. For example: "/car/:id".
+Replace all the element properties in our Route components (inside of Routes) with <ProtectedRoute /> EXCEPT for the "/login" route. We always want to be able to access that so leave it alone.
 
-Once that is complete, go to the Home component and look for the comment regarding the "a tag". Change that to a Link component and have the "to" property be: /car/${car.id}. You can leave the text, "See More Details" the same. Notice how you are routed to the "Car" component when you click on the Link. Try clicking on different cars, do you notice that the id is different each time?
+Dont forget to also add the component property to the <ProtectedRoute /> element in which the Route should render. For example, if the route is "/about", we would want to pass our "About" component in the component property:
+<ProtectedRoute component={ About }/>
+Upon making the changes to these Route's you should notice that you can no longer access any of the links in the navigation bar. They send you back to the login page because there is no cookie available. Let's make sure we set one when we log in.
 
-Now that we can navigate to the Car component we want to fill out this page so that it looks nice and provides details about the specific car we passed in. To get the specific car we need to access the "id" property from the path. We can do that by accessing it using a hook from "react-router-dom". The useParams hook return an object of key/value pairs of the dynamic params from the current URL that were matched by the Route's path. At the top level, make sure to import { useParams } from "react-router-dom". Once we have that hook being imported, inside of our component, but before the return, we want to instantiate useParams() and destructure the object it returns. It will look like this: const {id} = useParams(). Now that we have destructured the object that useParams returns, we now have access to the key/value by using the id variable. Check out the docs for useParams here.
+Go to the Login component (under src/components/Login.js) and look at the login function. There is a comment to a the cookie. Set a cookie equal to the following value: loggedIn=true;max-age=60*1000.
 
-Note that if you would have called the parameter (id) something different in the router, say "carId", then that would change how we access it here as well const {carId} = useParams(). Also, if you feel more comfortable, instead of destructuring, we can simply access our dynamic values with this same line: const carId = useParams().carId.
+Notice you can now login and access the pages appropriately. We've set an expiration time of one minute on the cookie so go do something else for a minute and then come back to this site. Refresh the page. Were you directed back to the login page?
 
-Now that we have the specific id we need to find the car in the list that matches that id. You should know how to find items in an array by now so go ahead and find the specific car. Hint: the cars are in the "cars" variable at the top of the file.
-
-Create the Car component so that it looks like the image below. To do that, import the MUI components as specified at the top of the file. You will use the MUI documentation to figure out how to style this page.
+Also, the "logout" button will also delete the cookie and navigate you back to the '/login' screen.
